@@ -1,0 +1,46 @@
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# SQLite database
+*.db
+calorie_tracker.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+log/
+
+# Railway / deployment
+.railway/
+build/
+dist/
+
+# Temporary files
+*.tmp
+*.temp

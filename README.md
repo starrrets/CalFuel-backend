@@ -1,2 +1,28 @@
-# CalFuel-backend
-Backend Telegram-бота для трекинга калорий. FastAPI + aiogram + SQLite. Расчёт нормы по Mifflin-St Jeor, Mini App API, база блюд и история.
+# 🍊 CalFuel Backend
+
+**Telegram-бот + REST API** для трекинга калорий с красивым Mini App.
+
+## ✨ Особенности
+
+- Расчёт суточной нормы по **самой точной формуле 2026 года** — Mifflin-St Jeor
+- Поддержка дефицита / профицита / поддержания с произвольным процентом
+- База собственных блюд (КБЖУ)
+- История потребления по дням
+- Полноценное Telegram Mini App с liquid glass дизайном
+- Редактирование и удаление записей
+- SQLite
+
+## 🛠 Технологии
+
+- **Python** + **FastAPI**
+- **aiogram 3.x** (Telegram Bot)
+- **SQLAlchemy** + SQLite
+- Автоматический пересчёт нормы при изменении данных
+
+## 🚀 Быстрый запуск
+
+1. Клонируй репозиторий
+2. Скопируй `.env.example` → `.env` и вставь `BOT_TOKEN`
+3. Установи зависимости:
+   ```bash
+   pip install -r requirements.txt

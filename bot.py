@@ -31,6 +31,11 @@ dp = Dispatcher()
 
 STRINGS = {
     "ru": {
+        "btn_main_profile": "👤 Профиль",
+        "btn_main_today": "📊 Сегодня",
+        "btn_main_history": "📅 История",
+        "btn_main_lang": "🌍 Язык",
+        "btn_main_app": "🍊 Открыть приложение",
         "start": (
             "👋 Привет! Я трекер калорий.\n\n"
             "Нажми «👤 Профиль», чтобы указать свои данные и получить персональную норму калорий.\n"
@@ -109,6 +114,11 @@ STRINGS = {
         "activity_very_high": "Очень высокий (1.9)",
     },
     "en": {
+        "btn_main_profile": "👤 Profile",
+        "btn_main_today": "📊 Today",
+        "btn_main_history": "📅 History",
+        "btn_main_lang": "🌍 Language",
+        "btn_main_app": "🍊 Open app",
         "start": (
             "👋 Hi! I'm a calorie tracker.\n\n"
             "Tap «👤 Profile» to enter your details and get your personal calorie goal.\n"
@@ -187,6 +197,11 @@ STRINGS = {
         "activity_very_high": "Very high (1.9)",
     },
     "uk": {
+        "btn_main_profile": "👤 Профіль",
+        "btn_main_today": "📊 Сьогодні",
+        "btn_main_history": "📅 Історія",
+        "btn_main_lang": "🌍 Мова",
+        "btn_main_app": "🍊 Відкрити додаток",
         "start": (
             "👋 Привіт! Я трекер калорій.\n\n"
             "Натисни «👤 Профіль», щоб вказати свої дані та отримати персональну норму калорій.\n"
@@ -265,6 +280,11 @@ STRINGS = {
         "activity_very_high": "Дуже високий (1.9)",
     },
     "es": {
+        "btn_main_profile": "👤 Perfil",
+        "btn_main_today": "📊 Hoy",
+        "btn_main_history": "📅 Historial",
+        "btn_main_lang": "🌍 Idioma",
+        "btn_main_app": "🍊 Abrir app",
         "start": (
             "👋 ¡Hola! Soy un rastreador de calorías.\n\n"
             "Toca «👤 Perfil» para ingresar tus datos y obtener tu objetivo calórico personal.\n"
@@ -343,6 +363,11 @@ STRINGS = {
         "activity_very_high": "Muy alto (1.9)",
     },
     "de": {
+        "btn_main_profile": "👤 Profil",
+        "btn_main_today": "📊 Heute",
+        "btn_main_history": "📅 Verlauf",
+        "btn_main_lang": "🌍 Sprache",
+        "btn_main_app": "🍊 App öffnen",
         "start": (
             "👋 Hallo! Ich bin ein Kalorien-Tracker.\n\n"
             "Tippe auf «👤 Profil», um deine Daten einzugeben und dein persönliches Kalorienziel zu erhalten.\n"
@@ -421,6 +446,11 @@ STRINGS = {
         "activity_very_high": "Sehr hoch (1.9)",
     },
     "fr": {
+        "btn_main_profile": "👤 Profil",
+        "btn_main_today": "📊 Aujourd'hui",
+        "btn_main_history": "📅 Historique",
+        "btn_main_lang": "🌍 Langue",
+        "btn_main_app": "🍊 Ouvrir l'app",
         "start": (
             "👋 Bonjour ! Je suis un tracker de calories.\n\n"
             "Appuie sur «👤 Profil» pour entrer tes données et obtenir ton objectif calorique personnel.\n"
@@ -499,6 +529,11 @@ STRINGS = {
         "activity_very_high": "Très élevé (1.9)",
     },
     "be": {
+        "btn_main_profile": "👤 Профіль",
+        "btn_main_today": "📊 Сёння",
+        "btn_main_history": "📅 Гісторыя",
+        "btn_main_lang": "🌍 Мова",
+        "btn_main_app": "🍊 Адкрыць праграму",
         "start": (
             "👋 Прывітанне! Я трэкер калорый.\n\n"
             "Націсні «👤 Профіль», каб указаць свае дадзеныя і атрымаць персанальную норму калорый.\n"
@@ -606,6 +641,11 @@ _ACTIVITY_MAP = {
 _ACTIVITY_KEYS = {1.2: "activity_sedentary", 1.375: "activity_light", 1.55: "activity_moderate",
                   1.725: "activity_high", 1.9: "activity_very_high"}
 
+_BTN_PROFILE = {v["btn_main_profile"] for v in STRINGS.values()}
+_BTN_TODAY   = {v["btn_main_today"]   for v in STRINGS.values()}
+_BTN_HISTORY = {v["btn_main_history"] for v in STRINGS.values()}
+_BTN_LANG    = {v["btn_main_lang"]    for v in STRINGS.values()}
+
 
 def t(lang: str, key: str, **kwargs) -> str:
     text = STRINGS.get(lang, STRINGS["ru"]).get(key, STRINGS["ru"].get(key, key))
@@ -649,14 +689,13 @@ class ProfileStates(StatesGroup):
 # ====================== KEYBOARDS ======================
 
 def main_kb(lang: str) -> ReplyKeyboardMarkup:
-    # Main keyboard buttons are intentionally kept in Russian/emoji so they
-    # match the F.text == "..." filters regardless of language setting.
+    s = STRINGS.get(lang, STRINGS["ru"])
     buttons = [
-        [KeyboardButton(text="👤 Профиль"), KeyboardButton(text="📊 Сегодня")],
-        [KeyboardButton(text="📅 История"), KeyboardButton(text="🌍 Язык")],
+        [KeyboardButton(text=s["btn_main_profile"]), KeyboardButton(text=s["btn_main_today"])],
+        [KeyboardButton(text=s["btn_main_history"]), KeyboardButton(text=s["btn_main_lang"])],
     ]
     if MINI_APP_URL:
-        buttons.append([KeyboardButton(text="🍊 Открыть приложение", web_app=WebAppInfo(url=MINI_APP_URL))])
+        buttons.append([KeyboardButton(text=s["btn_main_app"], web_app=WebAppInfo(url=MINI_APP_URL))])
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True, persistent=True)
 
 
@@ -731,9 +770,8 @@ async def start_command(message: Message):
 
 # ====================== ПРОФИЛЬ ======================
 
-@dp.message(F.text == "👤 Профиль")
-async def profile_button(message: Message, state: FSMContext):
-    lang = get_user_lang(message.from_user.id)
+@dp.message(F.text.in_(_BTN_PROFILE))
+async def profile_button(message: Message, state: FSMContext):    lang = get_user_lang(message.from_user.id)
     db = SessionLocal()
     try:
         user = db.query(User).filter(User.tg_id == message.from_user.id).first()
@@ -909,7 +947,7 @@ async def _save_profile(message: Message, state: FSMContext):
 
 # ====================== СЕГОДНЯ ======================
 
-@dp.message(F.text == "📊 Сегодня")
+@dp.message(F.text.in_(_BTN_TODAY))
 async def today_button(message: Message):
     lang = get_user_lang(message.from_user.id)
     db = SessionLocal()
@@ -932,7 +970,7 @@ async def today_button(message: Message):
 
 # ====================== ИСТОРИЯ ======================
 
-@dp.message(F.text == "📅 История")
+@dp.message(F.text.in_(_BTN_HISTORY))
 async def history_button(message: Message):
     lang = get_user_lang(message.from_user.id)
     db = SessionLocal()
@@ -957,7 +995,7 @@ async def history_button(message: Message):
 
 # ====================== ЯЗЫК ======================
 
-@dp.message(F.text == "🌍 Язык")
+@dp.message(F.text.in_(_BTN_LANG))
 async def lang_button(message: Message):
     lang = get_user_lang(message.from_user.id)
     await message.answer(t(lang, "lang_choose"), reply_markup=lang_inline_kb())

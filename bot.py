@@ -1017,6 +1017,7 @@ async def lang_callback(callback: CallbackQuery):
 
     lang_name = LANG_NAMES.get(new_lang, new_lang)
     await callback.message.edit_text(t(new_lang, "lang_changed", lang_name=lang_name))
+    await callback.message.answer(t(new_lang, "lang_changed", lang_name=lang_name), reply_markup=main_kb(new_lang))
     await callback.answer()
 
 

@@ -81,6 +81,7 @@ def get_profile(tg_id: int, db: Session = Depends(get_db)):
         "activity": user.activity,
         "goal_type": user.goal_type,
         "goal_percent": user.goal_percent,
+        "language": user.language or "ru",
     }
 
 

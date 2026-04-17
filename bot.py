@@ -891,8 +891,9 @@ async def _save_profile(message: Message, state: FSMContext):
         user.activity = data["activity"]
         user.goal_type = data["goal_type"]
         user.goal_percent = data.get("goal_percent", 0)
-        user.units = "metric"
         user.language = lang
+        if not user.units:
+            user.units = "metric"
         user.daily_norm = calculate_daily_norm(
             user.gender, user.age, user.height, user.weight,
             user.activity, user.goal_type, user.goal_percent,

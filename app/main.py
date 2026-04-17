@@ -37,6 +37,7 @@ class ProfileCreate(BaseModel):
     goal_type: str
     goal_percent: float = 0
     units: str = "metric"
+    language: str = None
 
 
 class FoodCreate(BaseModel):
@@ -100,6 +101,8 @@ def save_profile(profile: ProfileCreate, db: Session = Depends(get_db)):
     user.goal_type = profile.goal_type
     user.goal_percent = profile.goal_percent
     user.units = profile.units
+    if profile.language:
+        user.language = profile.language
     user.daily_norm = calculate_daily_norm(
         profile.gender, profile.age, profile.height,
         profile.weight, profile.activity, profile.goal_type, profile.goal_percent,
@@ -108,6 +111,20 @@ def save_profile(profile: ProfileCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return {"daily_norm": user.daily_norm, "units": user.units}
+
+
+@app.post("/api/profile/language")
+def set_language(payload: dict, db: Session = Depends(get_db)):
+    tg_id = payload.get("tg_id")
+    language = payload.get("language")
+    if not tg_id or not language:
+        raise HTTPException(status_code=400, detail="tg_id and language required")
+    user = db.query(User).filter(User.tg_id == tg_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.language = language
+    db.commit()
+    return {"language": language}
 
 
 @app.get("/api/foods/{tg_id}")

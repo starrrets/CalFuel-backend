@@ -771,7 +771,8 @@ async def start_command(message: Message):
 # ====================== ПРОФИЛЬ ======================
 
 @dp.message(F.text.in_(_BTN_PROFILE))
-async def profile_button(message: Message, state: FSMContext):    lang = get_user_lang(message.from_user.id)
+async def profile_button(message: Message, state: FSMContext):
+    lang = get_user_lang(message.from_user.id)
     db = SessionLocal()
     try:
         user = db.query(User).filter(User.tg_id == message.from_user.id).first()

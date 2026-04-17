@@ -6,9 +6,11 @@ import os
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./calorie_tracker.db")
 
-# Railway Postgres gives a URL starting with "postgres://", SQLAlchemy needs "postgresql://"
+# Railway Postgres gives "postgres://" — SQLAlchemy needs "postgresql+pg8000://"
 if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=connect_args)

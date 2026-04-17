@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Date
+from sqlalchemy import create_engine, Column, Integer, String, Float, Date, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import datetime
@@ -29,10 +29,8 @@ class Food(Base):
     id = Column(Integer, primary_key=True, index=True)
     tg_id = Column(Integer, index=True)
     name = Column(String, index=True)
-    calories = Column(Float)
-    proteins = Column(Float, default=0)
-    fats = Column(Float, default=0)
-    carbs = Column(Float, default=0)
+    calories = Column(Float)          # total kcal (fixed) OR kcal per 100 g
+    per100g = Column(Boolean, default=False)  # True = calories are per 100 g
 
 class Log(Base):
     __tablename__ = "logs"

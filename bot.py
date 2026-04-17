@@ -14,7 +14,9 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram import F
 from dotenv import load_dotenv
 
-from app.database import SessionLocal, User, Log
+from app.database import SessionLocal, User, Log, Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 load_dotenv()
 

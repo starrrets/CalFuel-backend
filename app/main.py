@@ -193,9 +193,12 @@ def get_day_logs(tg_id: int, date_str: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid date format, use YYYY-MM-DD")
     logs = db.query(Log).filter(Log.tg_id == tg_id, Log.date == day).all()
     total = sum(l.calories for l in logs)
+    user = db.query(User).filter(User.tg_id == tg_id).first()
+    norm = user.daily_norm if user and user.daily_norm else 2000
     return {
         "date": date_str,
         "total": total,
+        "daily_norm": norm,
         "logs": [{"id": l.id, "food_name": l.food_name, "calories": l.calories} for l in logs],
     }
 

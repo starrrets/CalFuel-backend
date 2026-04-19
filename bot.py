@@ -97,7 +97,7 @@ STRINGS = {
         ),
         "history_empty":        "Записей пока нет. Начни отслеживать питание!",
         "history_header":       "📅 История питания:\n\n",
-        "history_row":          "{date}: {kcal} ккал\n",
+        "history_row":          "{date}: {kcal} ккал  |  Остаток: {remaining} ккал\n",
         "lang_choose":          "🌍 Выбери язык:",
         "lang_changed":         "✅ Язык изменён на {lang_name}.",
         "food_hint":            "Напиши, что съел и сколько калорий, например:\n«гречка 350» или просто «500»",
@@ -198,7 +198,7 @@ STRINGS = {
         ),
         "history_empty":        "No records yet. Start tracking your meals!",
         "history_header":       "📅 Calorie history:\n\n",
-        "history_row":          "{date}: {kcal} kcal\n",
+        "history_row":          "{date}: {kcal} kcal  |  Remaining: {remaining} kcal\n",
         "lang_choose":          "🌍 Choose a language:",
         "lang_changed":         "✅ Language changed to {lang_name}.",
         "food_hint":            "Tell me what you ate and the calories, for example:\n«oatmeal 350» or just «500»",
@@ -299,8 +299,7 @@ STRINGS = {
         ),
         "history_empty":        "Записів поки немає. Починай відстежувати харчування!",
         "history_header":       "📅 Історія харчування:\n\n",
-        "history_row":          "{date}: {kcal} ккал\n",
-        "lang_choose":          "🌍 Обери мову:",
+        "history_row":          "{date}: {kcal} ккал  |  Залишок: {remaining} ккал\n",
         "lang_changed":         "✅ Мову змінено на {lang_name}.",
         "food_hint":            "Напиши, що з'їв і скільки калорій, наприклад:\n«гречка 350» або просто «500»",
         "food_added":           "✅ +{calories} ккал\nСьогодні: {eaten} ккал  |  Залишилось: {remaining} ккал",
@@ -399,7 +398,7 @@ STRINGS = {
         ),
         "history_empty":        "Aún no hay registros. ¡Empieza a rastrear tus comidas!",
         "history_header":       "📅 Historial de calorías:\n\n",
-        "history_row":          "{date}: {kcal} kcal\n",
+        "history_row":          "{date}: {kcal} kcal  |  Restante: {remaining} kcal\n",
         "lang_choose":          "🌍 Elige un idioma:",
         "lang_changed":         "✅ Idioma cambiado a {lang_name}.",
         "food_hint":            "Cuéntame qué comiste y las calorías, por ejemplo:\n«avena 350» o simplemente «500»",
@@ -499,7 +498,7 @@ STRINGS = {
         ),
         "history_empty":        "Noch keine Einträge. Fang an, deine Mahlzeiten zu tracken!",
         "history_header":       "📅 Kalorienhistorie:\n\n",
-        "history_row":          "{date}: {kcal} kcal\n",
+        "history_row":          "{date}: {kcal} kcal  |  Übrig: {remaining} kcal\n",
         "lang_choose":          "🌍 Wähle eine Sprache:",
         "lang_changed":         "✅ Sprache geändert auf {lang_name}.",
         "food_hint":            "Schreib, was du gegessen hast und wie viele Kalorien, z. B.:\n«Haferbrei 350» oder einfach «500»",
@@ -599,7 +598,7 @@ STRINGS = {
         ),
         "history_empty":        "Pas encore d'enregistrements. Commence à suivre tes repas !",
         "history_header":       "📅 Historique calorique :\n\n",
-        "history_row":          "{date} : {kcal} kcal\n",
+        "history_row":          "{date} : {kcal} kcal  |  Restant : {remaining} kcal\n",
         "lang_choose":          "🌍 Choisis une langue :",
         "lang_changed":         "✅ Langue changée en {lang_name}.",
         "food_hint":            "Dis-moi ce que tu as mangé et les calories, par exemple :\n«flocons d'avoine 350» ou simplement «500»",
@@ -699,7 +698,7 @@ STRINGS = {
         ),
         "history_empty":        "Запісаў пакуль няма. Пачні адсочваць харчаванне!",
         "history_header":       "📅 Гісторыя харчавання:\n\n",
-        "history_row":          "{date}: {kcal} ккал\n",
+        "history_row":          "{date}: {kcal} ккал  |  Засталося: {remaining} ккал\n",
         "lang_choose":          "🌍 Абяры мову:",
         "lang_changed":         "✅ Мова зменена на {lang_name}.",
         "food_hint":            "Напішы, што з'еў і колькі калорый, напрыклад:\n«грэчка 350» або проста «500»",
@@ -1149,6 +1148,8 @@ async def history_button(message: Message):
     lang = get_user_lang(message.from_user.id)
     db = SessionLocal()
     try:
+        user = db.query(User).filter(User.tg_id == message.from_user.id).first()
+        norm = user.daily_norm if user and user.daily_norm else 2000
         logs = db.query(Log).filter(Log.tg_id == message.from_user.id).order_by(Log.date.desc()).all()
         result = {}
         for log in logs:
@@ -1163,7 +1164,8 @@ async def history_button(message: Message):
 
     text = t(lang, "history_header")
     for d in sorted(result.keys(), reverse=True):
-        text += t(lang, "history_row", date=d, kcal=int(result[d]))
+        kcal = int(result[d])
+        text += t(lang, "history_row", date=d, kcal=kcal, remaining=int(norm - kcal))
     await message.answer(text, reply_markup=main_kb(lang))
 
 
@@ -1207,7 +1209,7 @@ async def log_foods_button(message: Message, state: FSMContext):
 async def back_button(message: Message, state: FSMContext):
     await state.clear()
     lang = get_user_lang(message.from_user.id)
-    await message.answer(t(lang, "start").split("\n")[0], reply_markup=main_kb(lang))
+    await message.answer("✅", reply_markup=main_kb(lang))
 
 
 @dp.message(FoodStates.choose_type)

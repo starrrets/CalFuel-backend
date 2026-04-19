@@ -1218,7 +1218,7 @@ async def food_choose_type(message: Message, state: FSMContext):
 
     if message.text == s["btn_back"]:
         await state.clear()
-        await message.answer(t(lang, "start").split("\n")[0], reply_markup=main_kb(lang))
+        await message.answer("✅", reply_markup=main_kb(lang))
         return
 
     per100g = message.text == s["btn_food_per100g"]
